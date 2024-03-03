@@ -1,44 +1,61 @@
+// uses a hook, has to be client
 'use client'
-import Image from "next/image";
-import styles from "./page.module.css";
 
-type tMediaDevices = {
-  inputs: MediaDeviceInfo[];
-  outputs: MediaDeviceInfo[];
-}
+import "./pageStyles.css";
+import { useAVMediaDevices } from "./hooks/useGetMediaDevices";
 
 export default function Home() {
-const getMediaStreamDevices = async () => {
-    try {
-      const media = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-      // console.table(media)
-      if (media) {
-        const devices = await navigator.mediaDevices.enumerateDevices()
-          const audio: tMediaDevices = { inputs: [], outputs: [] }
-          const video: tMediaDevices = { inputs: [], outputs: [] }
-        for (let device of devices) {
-          if (device.kind.includes('audio')) {
-            device.kind.includes('out') ? audio.outputs.push(device) : audio.inputs.push(device)
-          } else {
-            device.kind.includes('out') ? video.outputs.push(device) : video.inputs.push(device)
-          }
-        }
 
-        // return devices
-        return {audio, video}
-      }
-    } catch (error: any) {
-      console.error(error.message)
-  }
-  }
+  const { mediaDevices, stopTracks } = useAVMediaDevices()
 
-  const devices = getMediaStreamDevices()
-  console.log("**devices**", devices)
 
 
   return (
-    <main className={styles.main}>
+    <main className=".root">
       <h1>Home</h1>
+      <button onClick={() => stopTracks({audio: true, video: true})}>Click</button>
+      <ul> Audio In
+        {mediaDevices?.audio?.inputs?.map((device) => {
+          return (
+            <li
+              key={`${device.deviceId}`}>
+              {device.label}
+            </li>
+          )
+      })}
+      </ul>
+
+      <ul> Audio Out
+        {mediaDevices?.audio?.outputs?.map((device) => {
+          return (
+            <li
+              key={`${device.deviceId}`}>
+              {device.label}
+            </li>
+          )
+      })}
+      </ul>
+
+      <ul> Video In
+        {mediaDevices?.video?.inputs?.map((device) => {
+          return (
+            <li
+              key={`${device.deviceId}`}>
+              {device.label}
+            </li>
+          )
+      })}
+      </ul>
+      <ul> Video Out
+        {mediaDevices?.video?.outputs?.map((device) => {
+          return (
+            <li
+              key={`${device.deviceId}`}>
+              {device.label}
+            </li>
+          )
+      })}
+      </ul>
     </main>
   );
 }
