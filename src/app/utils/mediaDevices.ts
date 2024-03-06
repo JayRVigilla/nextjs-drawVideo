@@ -37,6 +37,7 @@ export function getLocalStreams() {
   try {
     const localStreams = navigator.mediaDevices.getUserMedia({ audio: true, video: true })
       .then(stream => { return stream })
+    // console.log("getLocalStreams", localStreams)
     return localStreams
   } catch (error:any) {
   console.error(error.message)

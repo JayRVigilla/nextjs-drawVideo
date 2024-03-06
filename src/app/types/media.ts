@@ -8,3 +8,7 @@ export type tMediaDevices = {
   video: tAudioVideoDevices;
 }
 
+export type tLocalMediaTracks = {
+  audio: MediaStreamTrack[];
+  video: MediaStreamTrack[];
+}
