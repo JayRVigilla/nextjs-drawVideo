@@ -1,17 +1,12 @@
 /** Video documentation
  */
 import React, { useEffect, useRef, MutableRefObject } from "react";
-
-import clsx from "clsx";
-
 import "./styles.css";
-import { useVideoStream } from "@/app/hooks/useVideoStream";
 
 export interface VideoProps {
   "data-test-id"?: string;
   id?: string;
   stream: MediaStream;
-  // videoRef: MutableRefObject<HTMLVideoElement>;
 }
 
 export const Video = ({ id = "default", stream }: VideoProps) => {
@@ -23,8 +18,16 @@ export const Video = ({ id = "default", stream }: VideoProps) => {
       videoRef.current.play()
       console.log(`Attached ${stream.id} to videoElement#${id}` )
     }
-
   }, [stream, videoRef, id])
+
+  /**
+ * TODO
+ * stop()
+ * refresh()/reattach()
+ * notVisisble()
+ * detach(): should also turnoff indicator light if local input
+ */
+
 
   return (
     <div className="root video-container">
