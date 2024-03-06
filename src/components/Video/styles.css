@@ -1,9 +1,9 @@
 div.root.video-container {
-  height: 100%;
-  width: 100%;
-  border: 1px solid red;
+  border: 1px solid teal; /* !! dev */
+  aspect-ratio: 16/9;
 
-  video.video-stream {
-    aspect-ratio: 16/9;
+  video {
+    height: 100%;
+    width: 100%;
   }
 }
