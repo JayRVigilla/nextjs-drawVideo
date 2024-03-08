@@ -5,9 +5,13 @@
   align-items: center;
   padding: 6rem;
   min-height: 100vh;
-  
+
   h1, ul, li {
     color: white;
+  }
+
+  div.easel-container{
+    background-color: white;
   }
 }
 
