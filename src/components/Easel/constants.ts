@@ -35,3 +35,6 @@ export const HEX_TO_PEN_COLOR = {
 export const INITIAL_PEN_WIDTH = 4;
 
 export const INITIAL_PEN_COLOR = PEN_COLOR_TO_HEX.green;
+
+export const MAX_ANNOTATION_POINTS: number =
+  parseInt(`${process.env.REACT_APP_MAX_ANNOTATION_POINTS}`, 10) || 20;

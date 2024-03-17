@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 // import { Guid } from "guid-typescript";
 import { PEN_COLOR_TO_HEX, INITIAL_DIMENSIONS, INITIAL_PEN_COLOR, INITIAL_PEN_WIDTH } from "./constants";
-import { PenStyle, VideoDimensions, InstructionMemory } from "@/app/types/drawing";
+import { PenStyle, VideoDimensions, InstructionMemory, NAnnotationPoint } from "@/app/types/drawing";
 
 export const useDrawingState = () => {
   const canvasRef = useRef()

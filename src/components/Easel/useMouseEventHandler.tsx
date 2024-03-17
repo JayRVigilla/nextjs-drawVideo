@@ -1,7 +1,8 @@
-import { InstructionMemory, PenStyle, VideoDimensions } from "@/app/types/drawing";
-import { useRef, useEffect, useState, SetStateAction, Dispatch, MutableRefObject } from "react";
-import { INITIAL_PREVIOUS_POINT } from "./constants";
+import { IPosition, InstructionMemory, NAnnotationPoint, PenStyle, VideoDimensions } from "@/app/types/drawing";
+import { useRef, useEffect, useState, SetStateAction, Dispatch, MutableRefObject, SyntheticEvent } from "react";
+import { INITIAL_PREVIOUS_POINT, MAX_ANNOTATION_POINTS } from "./constants";
 import { TwoDimensionPosition } from "@/app/types/drawing";
+import { draw, normalizeInstruction } from "@/app/utils/draw";
 
 type tProps = {
   canvasRef: MutableRefObject<HTMLCanvasElement>
@@ -39,25 +40,23 @@ export const useMouseEventHandler = ({
     _setPreviousPoint(data);
   };
 
-  const [_backingInstructions, _setBackingInstructions] = useState([]);
+  const [_backingInstructions, _setBackingInstructions] = useState<NAnnotationPoint[]>([]);
   const backingInstructions = useRef(_backingInstructions);
   const setBackingInstructions = (data: NAnnotationPoint[]) => {
     backingInstructions.current = data;
     _setBackingInstructions(data);
   };
-  const refreshInProgress = useAppSelector(selectTriggerRefreshFrames);
+  // const refreshInProgress = useAppSelector(selectTriggerRefreshFrames);
 
-  const canvas = document.getElementById(
-    TELESTRATION_EASEL_ID
-  ) as HTMLCanvasElement;
-  const isAllowedToDraw =
-    !refreshInProgress && canvas && isHostUser && isDrawModeOn;
+  const canvas = canvasRef?.current
+  // const isAllowedToDraw =
+  //   !refreshInProgress && canvas && isHostUser && isDrawModeOn;
 
   // onMouseDown event
   const onMouseDown = (event: MouseEvent) => {
-    if (!isAllowedToDraw) {
-      return;
-    }
+    // if (!isAllowedToDraw) {
+    //   return;
+    // }
 
     /**
      * the default behavior is to either drag and drop or highlight text.
@@ -68,12 +67,12 @@ export const useMouseEventHandler = ({
     canvas.addEventListener("mousemove", onMouseMove);
 
     const newPreviousPoint: any = {
-      x: event.pageX - videoDimensions.offsetWidth,
-      y: event.pageY - videoDimensions.offsetHeight,
+      x: event.pageX - (videoDimensions?.offsetWidth ?? 0),
+      y: event.pageY - (videoDimensions?.offsetHeight ?? 0),
     };
     setPreviousPoint(newPreviousPoint);
     buildAnnotationPointHelper(newPreviousPoint);
-    dispatch(telestrationActions.setSendEvent({ type: "START" }));
+    // dispatch(telestrationActions.setSendEvent({ type: "START" }));
   };
 
   const drawLocalAnnotation = (point: IPosition) => {
@@ -81,7 +80,7 @@ export const useMouseEventHandler = ({
       width: penWidth,
       color: penColor,
     };
-    draw(previousPoint.current, point, styles);
+    draw(previousPoint.current, point, styles, canvasRef);
 
     const newPreviousPoint = { x: point.x, y: point.y };
     setPreviousPoint(newPreviousPoint);
@@ -100,8 +99,8 @@ export const useMouseEventHandler = ({
 
   const helperForTouchOrMouseEvent = (aTouch: any) => {
     const anInstruction = {
-      x: aTouch.pageX - videoDimensions.offsetWidth,
-      y: aTouch.pageY - videoDimensions.offsetHeight,
+      x: aTouch.pageX - (videoDimensions.offsetWidth ?? 0),
+      y: aTouch.pageY - (videoDimensions.offsetHeight ?? 0),
     };
 
     drawLocalAnnotation(anInstruction);
@@ -138,10 +137,10 @@ export const useMouseEventHandler = ({
       HTMLCanvasElement,
       MouseEvent
     >;
-    if (!isAllowedToDraw) {
-      // only the Host get to draw
-      return;
-    }
+    // if (!isAllowedToDraw) {
+    //   // only the Host get to draw
+    //   return;
+    // }
 
     /* Always make sure left button is down while moving */
     if (anEvent.buttons === 1) {
@@ -152,10 +151,10 @@ export const useMouseEventHandler = ({
   };
 
   const endLine = () => {
-    if (!isAllowedToDraw) {
-      // only the Host get to draw
-      return;
-    }
+    // if (!isAllowedToDraw) {
+    //   // only the Host get to draw
+    //   return;
+    // }
     canvas.removeEventListener("mousemove", onMouseMove);
 
     setPreviousPoint(INITIAL_PREVIOUS_POINT);
@@ -176,7 +175,7 @@ export const useMouseEventHandler = ({
     endLine();
   };
 
-  const onMouseLeave = (event) => {
+  const onMouseLeave = (event: MouseEvent) => {
     // only end line and send endEvent if drawing
     if (event.buttons === 1) {
       endLine();
@@ -187,13 +186,17 @@ export const useMouseEventHandler = ({
   useEffect(() => {
     if (!canvas || !isDrawModeOn) {
       if (!canvas) {
-        logger().info(
+        console.log(
           "No canvas - Cannot add Telestration mouseEvent listeners"
         );
+        // logger().info(
+        //   "No canvas - Cannot add Telestration mouseEvent listeners"
+        // );
       }
       return;
     }
-    logger().info(`Updating Telestration onMouseEvent listeners`);
+    console.log(`Updating Telestration onMouseEvent listeners`);
+    // logger().info(`Updating Telestration onMouseEvent listeners`);
 
     canvas.addEventListener("mousedown", onMouseDown);
     canvas.addEventListener("mouseup", onMouseUp);
@@ -210,6 +213,9 @@ export const useMouseEventHandler = ({
     videoDimensions,
     penWidth,
     telestrationHistory,
-    isAllowedToDraw,
+    onMouseDown,
+    onMouseLeave,
+    onMouseUp
+    // isAllowedToDraw,
   ]);
 };
