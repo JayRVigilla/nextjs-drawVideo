@@ -1,16 +1,16 @@
 'use client'
-import { useState, useRef } from "react";
+import { useState, useRef, MutableRefObject } from "react";
 // import { Guid } from "guid-typescript";
 import { PEN_COLOR_TO_HEX, INITIAL_DIMENSIONS, INITIAL_PEN_COLOR, INITIAL_PEN_WIDTH } from "./constants";
 import { PenStyle, VideoDimensions, InstructionMemory, NAnnotationPoint } from "@/app/types/drawing";
 
 export const useDrawingState = () => {
-  const canvasRef = useRef()
+  const canvasRef = useRef<HTMLCanvasElement>()
 
-  const [isDrawModeOn, setIsDrawModeOn] = useState<boolean>(false); // Palette is open on Host
+  const [isDrawModeOn, setIsDrawModeOn] = useState<boolean>(true); // Palette is open on Host
   const [penStyle, setPenStyle] = useState<PenStyle>({ width: INITIAL_PEN_WIDTH, color: INITIAL_PEN_COLOR });
   const [videoDimensions, setVideoDimensions] = useState<VideoDimensions>(INITIAL_DIMENSIONS); // dimensions of the video element
-  const [telestrationHistory, setTelestrationHistory] = useState<InstructionMemory[]>();
+  const [telestrationHistory, setTelestrationHistory] = useState<InstructionMemory[]>([]);
   const [backingInstructions, setBackingInstructions] = useState<NAnnotationPoint[]>();
 
   // !! may need these for receiving remote drawings

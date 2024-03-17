@@ -7,11 +7,12 @@ export const draw = (
   pointFrom: TwoDimensionPosition,
   pointTo: TwoDimensionPosition,
   style: PenStyle,
-  canvasRef: MutableRefObject<HTMLCanvasElement>
+  // canvasRef: MutableRefObject<HTMLCanvasElement>
+  canvas: HTMLCanvasElement
 ) => {
-  if (!canvasRef?.current) return
+  // if (!canvasRef?.current) return
 
-  const canvas = canvasRef?.current
+  // const canvas = canvasRef?.current
   // const canvas = document.getElementById(
   //   TELESTRATION_EASEL_ID
   // ) as HTMLCanvasElement;
@@ -126,7 +127,7 @@ export const drawAnnotation = (
           pointFrom as TwoDimensionPosition,
           pointTo as TwoDimensionPosition,
           styles,
-          canvasRef
+          canvas
         );
       } catch (error: any) {
         console.warn("Skipping annotation instructions.", error?.message);
