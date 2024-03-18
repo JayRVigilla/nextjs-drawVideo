@@ -4,7 +4,7 @@
 import "./pageStyles.css";
 import { useAVMediaDevices } from "./hooks/useGetMediaDevices";
 import { Video } from "@/components/Video";
-import { Easel } from "@/components/Easel";
+import { Easel } from "@/components/Easel/indexOG";
 export default function Home() {
 
   const { mediaDevices, streams, mediaTracks } = useAVMediaDevices()

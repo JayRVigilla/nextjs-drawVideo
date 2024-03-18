@@ -221,6 +221,10 @@ export const useMouseEventHandler = ({
 
     canvas.addEventListener("mousemove", onMouseMove);
 
+    // const newPreviousPoint: any = {
+    //   x: event.pageX,
+    //   y: event.pageY,
+    // };
     const newPreviousPoint: any = {
       x: event.pageX - (videoDimensions?.offsetWidth ?? 0),
       y: event.pageY - (videoDimensions?.offsetHeight ?? 0),
@@ -303,4 +307,25 @@ export const useMouseEventHandler = ({
     buildAnnotationPointHelper,
     helperForTouchOrMouseEvent
   ]);
+
+    useEffect(() => {
+    /**
+     * Listening to the video element resize in order to redraw Telestration.
+     * Using the ResizeObserver API instead of useEventListener since using
+     * videoDimensions as a dependency is unreliable for real-time
+     * resize events.
+     * https:// developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+     */
+    console.log('%c * new useEffect', 'color: orange; background-color: transparent; font-weight: 800; font-style: italic;')
+    if (canvasRef?.current?.parentElement) {
+        console.log('%c * IF new useEffect', 'color: orange; background-color: transparent; font-weight: 800; font-style: italic;')
+        const resizeObserver = new ResizeObserver((entries) => {
+          console.log('%c * resize - entries ', 'color: #3366CC; background-color: transparent; font-weight: 800; font-style: italic;', { entries })
+          const {width, height} = entries[0].contentRect
+          setVideoDimensions({...videoDimensions, width, height})
+        })
+        resizeObserver.observe(canvasRef.current.parentElement)
+      }
+    }, [canvasRef]);
+
 };
