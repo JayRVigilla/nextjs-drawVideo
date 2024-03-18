@@ -1,6 +1,8 @@
 canvas.root{
+  position: absolute;
   width: 100%;
   Height: 100%;
-  background-color: rgba(0, 0, 200, 0.8);
+  background-color: rgba(0, 0, 200, 0.3);
   border: 1px solid orange;
+  z-index: 10;
 }

@@ -2,7 +2,7 @@ import { IPosition, InstructionMemory, NAnnotationPoint, PenStyle, VideoDimensio
 import { useRef, useEffect, useState, SetStateAction, Dispatch, MutableRefObject, SyntheticEvent, useCallback } from "react";
 import { INITIAL_PREVIOUS_POINT, MAX_ANNOTATION_POINTS } from "./constants";
 import { TwoDimensionPosition } from "@/app/types/drawing";
-import { draw, normalizeInstruction } from "@/app/utils/draw";
+import { draw, getParentDimensions, normalizeInstruction } from "@/app/utils/draw";
 
 type tProps = {
   canvasRef: MutableRefObject<HTMLCanvasElement | undefined>
@@ -28,7 +28,7 @@ export const useMouseEventHandler = ({
   // setTelestrationHistory,
     canvasRef
 }: tProps) => {
-
+// console.log('%c * useMouseEventHandler - videoDimensions ', 'color: orange; background-color: transparent; font-weight: 800; font-style: italic;', {videoDimensions})
   const { color: penColor, width: penWidth } = penStyle
 
   const [_previousPoint, _setPreviousPoint] = useState<TwoDimensionPosition>(
@@ -50,6 +50,11 @@ export const useMouseEventHandler = ({
   // const refreshInProgress = useAppSelector(selectTriggerRefreshFrames);
   // if(!canvasRef.current) return
   const canvas = canvasRef?.current
+
+  // if (canvasRef?.current && !videoDimensions) {
+  //   const parentDimensions = getParentDimensions(canvasRef?.current)
+  //   setVideoDimensions(parentDimensions)
+  // }
   // const isAllowedToDraw =
   //   !refreshInProgress && canvas && isHostUser && isDrawModeOn;
 
@@ -90,6 +95,7 @@ export const useMouseEventHandler = ({
   },[canvas, penColor, penWidth]);
 
   const buildAnnotationPointHelper = useCallback((anInstruction: any): void => {
+    console.log('%c * buildAnnotationPointHelper - videoDimensions, anInstruction ', 'color: green; background-color: transparent; font-weight: 800; font-style: italic;', {videoDimensions, anInstruction})
     const aPoint: NAnnotationPoint = normalizeInstruction(
       anInstruction,
       videoDimensions,
@@ -130,7 +136,7 @@ export const useMouseEventHandler = ({
       /* Retain the last point */
       setBackingInstructions([points[MAX_ANNOTATION_POINTS - 1]]);
     }
-  },[buildAnnotationPointHelper, drawLocalAnnotation, videoDimensions.offsetHeight, videoDimensions.offsetWidth]);
+  },[buildAnnotationPointHelper, drawLocalAnnotation, videoDimensions]);
 
   // // onMouseMove event
   // const onMouseMove = (moveEvent: Event): void => {
@@ -186,20 +192,20 @@ export const useMouseEventHandler = ({
   //   }
   // };
 
-  // add onMouseEvent listeners
   useEffect(() => {
-    if (!canvas || !isDrawModeOn) {
+  // add onMouseEvent listeners
+    // if (!canvas || !isDrawModeOn) {
       if (!canvas) {
-        console.log(
+        console.warn(
           "No canvas - Cannot add Telestration mouseEvent listeners"
         );
         // logger().info(
         //   "No canvas - Cannot add Telestration mouseEvent listeners"
         // );
+        return;
       }
-      return;
-    }
-    console.log(`Updating Telestration onMouseEvent listeners`);
+    // }
+    console.log(`Updating Telestration onMouseEvent listeners`, videoDimensions);
     // logger().info(`Updating Telestration onMouseEvent listeners`);
 
   // onMouseDown event

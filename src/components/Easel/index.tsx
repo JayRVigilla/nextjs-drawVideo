@@ -24,7 +24,10 @@ const {isDrawModeOn,
 } = useDrawingState()
   // allows Participants to receive annotationEvents and see live drawings
   // useTelestrationSubscriptions();
-// console.log('EAsel', canvasRef)
+
+  // console.log('EAsel', canvasRef, videoDimensions)
+  // console.log('%c * Easel - canvasRef, videoDimensions ', 'color: red; background-color: transparent; font-weight: 800; font-style: italic;', {canvasRef, videoDimensions})
+
   // converts Host mouse interactions to drawings
   useMouseEventHandler({
     penStyle,
@@ -45,6 +48,8 @@ setPenStyle,
     <canvas
       ref={canvasRef as LegacyRef<HTMLCanvasElement>}
       className="root"
+      width={videoDimensions.width}
+      height={videoDimensions.height}
     />
   );
 };

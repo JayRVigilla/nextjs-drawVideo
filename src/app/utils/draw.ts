@@ -14,9 +14,10 @@ export const draw = (
 
   // const canvas = canvasRef?.current
   // const canvas = document.getElementById(
-  //   TELESTRATION_EASEL_ID
-  // ) as HTMLCanvasElement;
-  const context = canvas.getContext("2d");
+    //   TELESTRATION_EASEL_ID
+    // ) as HTMLCanvasElement;
+    const context = canvas.getContext("2d");
+    console.log('%c * draw - pointFrom, pointTo, style, canvas ', 'color: #3366CC; background-color: transparent; font-weight: 800; font-style: italic;', {pointFrom, pointTo, style, canvas, context})
 
   if(!context) return
   context.beginPath();
@@ -135,4 +136,47 @@ export const drawAnnotation = (
       }
     }
   });
+};
+
+export const getParentDimensions = (canvas: HTMLCanvasElement): VideoDimensions => {
+  // const videoEl = getConsoleVideoElement();
+  const parentElement = canvas?.parentElement as HTMLDivElement;
+
+  // offset = actual dimensions, video = original dimensions (default: 1280x720)
+  const {
+    offsetWidth,
+    offsetHeight,
+    // videoWidth,
+    // videoHeight,
+    offsetLeft,
+    offsetTop,
+  } = canvas;
+
+  const offsetRatio = offsetWidth / offsetHeight;
+  // const videoRatio = videoWidth === videoHeight ? 1 : videoWidth / videoHeight; // ternary prevents 0/0 = NaN
+
+  let width = offsetWidth;
+  let height = offsetHeight;
+
+  // If the video element is short and wide (landscape)
+  // if (offsetRatio > videoRatio) {
+  //   width = height * videoRatio;
+  // }
+  // // If the video element is tall and thin (portrait), or exactly equal to the original ratio
+  // else {
+  //   height = width / videoRatio;
+  // }
+
+  console.log(
+    `Getting new video dimensions ${JSON.stringify({ width, height })}`
+  );
+
+  return {
+    width,
+    height,
+    offsetLeft,
+    offsetTop,
+    offsetWidth: (parentElement?.clientWidth - width) / 2 || 0,
+    offsetHeight: (parentElement?.clientHeight - height) / 2 || 0,
+  };
 };

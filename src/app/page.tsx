@@ -14,10 +14,9 @@ export default function Home() {
   return (
     <main className="main">
       <h1>Video</h1>
-      {streams && <Video stream={streams} />}
       <div className="easel-container">
-        {/* canvas */}
       <Easel />
+      {streams && <Video stream={streams} />}
       </div>
 
     </main>
