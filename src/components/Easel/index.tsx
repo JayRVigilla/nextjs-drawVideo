@@ -20,20 +20,18 @@ const {isDrawModeOn,
     setVideoDimensions,
     telestrationHistory,
     setTelestrationHistory,
-  canvasRef
+  canvasRef,
 } = useDrawingState()
 
   // converts Host mouse interactions to drawings
   useMouseEventHandler({
     penStyle,
-    // setPenStyle,
     videoDimensions,
     setVideoDimensions,
     isDrawModeOn,
-    // setIsDrawModeOn,
     telestrationHistory,
     setTelestrationHistory,
-    canvasRef
+    canvasRef,
   });
 
 

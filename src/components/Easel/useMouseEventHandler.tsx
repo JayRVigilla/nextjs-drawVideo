@@ -10,22 +10,17 @@ type tProps = {
   videoDimensions: VideoDimensions;
   isDrawModeOn: boolean;
   telestrationHistory: InstructionMemory[];
-  // setPenStyle: Dispatch<SetStateAction<PenStyle>>;
   setVideoDimensions: Dispatch<SetStateAction<VideoDimensions>>;
-  // setIsDrawModeOn: Dispatch<SetStateAction<boolean>>;
   setTelestrationHistory: Dispatch<SetStateAction<InstructionMemory[]>>;
 }
 
 export const useMouseEventHandler = ({
   penStyle,
-  // setPenStyle,
-    videoDimensions,
-    // setVideoDimensions,
-    isDrawModeOn = true,
-    // setIsDrawModeOn,
-    telestrationHistory,
-    setTelestrationHistory,
-    canvasRef
+  videoDimensions,
+  isDrawModeOn = true,
+  telestrationHistory,
+  setTelestrationHistory,
+  canvasRef
 }: tProps) => {
   const { color: penColor, width: penWidth } = penStyle
 
@@ -33,7 +28,6 @@ export const useMouseEventHandler = ({
     INITIAL_PREVIOUS_POINT
   );
   const previousPoint = useRef(_previousPoint);
-
   const setPreviousPoint = (data : TwoDimensionPosition) => {
     previousPoint.current = data;
     _setPreviousPoint(data);
@@ -71,9 +65,10 @@ export const useMouseEventHandler = ({
   },[penWidth, videoDimensions]);
 
   const helperForTouchOrMouseEvent = useCallback((aTouch: any) => {
+    // console.log("helper", videoDimensions)
     const anInstruction = {
-      x: aTouch.offsetX - (videoDimensions.offsetWidth ?? 0),
-      y: aTouch.offsetY - (videoDimensions.offsetHeight ?? 0),
+      x: aTouch.offsetX,
+      y: aTouch.offsetY,
     };
 
     drawLocalAnnotation(anInstruction);
@@ -90,10 +85,12 @@ export const useMouseEventHandler = ({
         0,
         MAX_ANNOTATION_POINTS
       );
+      // TODO: setTelestrationHistory as done in endline()
+      // TODO: ^ turn that into its own function
       /* Retain the last point */
       setBackingInstructions([points[MAX_ANNOTATION_POINTS - 1]]);
     }
-  },[buildAnnotationPointHelper, drawLocalAnnotation, videoDimensions]);
+  },[buildAnnotationPointHelper, drawLocalAnnotation]);
 
   useEffect(() => {
   // add onMouseEvent listeners
@@ -103,7 +100,7 @@ export const useMouseEventHandler = ({
         );
         return;
       }
-
+      console.log('%c * updating mouse listeners', 'color: orange; background-color: transparent; font-weight: 800; font-style: italic;')
   // onMouseDown event
   const onMouseDown = (event: MouseEvent) => {
     /**

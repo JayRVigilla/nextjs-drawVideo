@@ -175,9 +175,9 @@ export const getParentDimensions = (canvas: HTMLCanvasElement): VideoDimensions 
   return {
     width,
     height,
-    offsetLeft,
-    offsetTop,
-    offsetWidth: (parentElement?.clientWidth - width) / 2 || 0,
-    offsetHeight: (parentElement?.clientHeight - height) / 2 || 0,
+    // offsetLeft,
+    // offsetTop,
+    // offsetWidth: (parentElement?.clientWidth - width) / 2 || 0,
+    // offsetHeight: (parentElement?.clientHeight - height) / 2 || 0,
   };
 };
