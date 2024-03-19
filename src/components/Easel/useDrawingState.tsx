@@ -52,12 +52,28 @@ export const useDrawingState = () => {
 //   canvasRef
   //   });
 
-  useEffect(() => {
-    if (canvasRef?.current) {
-      const parentDimensions = getParentDimensions(canvasRef.current)
-      setVideoDimensions(parentDimensions)
-    }
-  },[canvasRef])
+  // useEffect(() => {
+  //   if (canvasRef?.current) {
+  //     const parentDimensions = getParentDimensions(canvasRef.current)
+  //     setVideoDimensions(parentDimensions)
+  //   }
+  // },[canvasRef])
+      useEffect(() => {
+    /**
+     * Listening to the parent element resize in order to redraw Telestration.
+     */
+    console.log('%c * new useEffect', 'color: orange; background-color: transparent; font-weight: 800; font-style: italic;')
+    if (canvasRef?.current?.parentElement) {
+
+        const resizeObserver = new ResizeObserver((entries) => {
+          const { width, height } = entries[0].contentRect
+          if(width !== videoDimensions.width || height !== videoDimensions.height){
+            setVideoDimensions({ ...videoDimensions, width, height })
+          }
+        })
+        resizeObserver.observe(canvasRef.current.parentElement)
+      }
+    }, [canvasRef, videoDimensions, setVideoDimensions]);
 
   return {
     isDrawModeOn,
