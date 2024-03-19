@@ -87,12 +87,12 @@ export const useMouseEventHandler = ({
       color: penColor,
     };
     if (!canvas) return
-    console.log("drawLocalAnnotation",{point, styles})
+    // console.log("drawLocalAnnotation",{point, styles})
     draw(previousPoint.current, point, styles, canvas);
-
+console.log('%c * drawLocalAnnotation - videoDimensions ', 'color: pink; background-color: transparent; font-weight: 800; font-style: italic;', {videoDimensions, point, styles})
     const newPreviousPoint = { x: point.x, y: point.y };
     setPreviousPoint(newPreviousPoint);
-  },[canvas, penColor, penWidth]);
+  },[canvas, penColor, penWidth, videoDimensions]);
 
   const buildAnnotationPointHelper = useCallback((anInstruction: any): void => {
     console.log('%c * buildAnnotationPointHelper - videoDimensions, anInstruction ', 'color: green; background-color: transparent; font-weight: 800; font-style: italic;', {videoDimensions, anInstruction})
@@ -109,8 +109,10 @@ export const useMouseEventHandler = ({
   const helperForTouchOrMouseEvent = useCallback((aTouch: any) => {
     console.log("helperForTouchOrMouseEvent", aTouch)
     const anInstruction = {
-      x: aTouch.pageX - (videoDimensions.offsetWidth ?? 0),
-      y: aTouch.pageY - (videoDimensions.offsetHeight ?? 0),
+      x: aTouch.offsetX - (videoDimensions.offsetWidth ?? 0),
+      // x: aTouch.pageX - (videoDimensions.offsetWidth ?? 0),
+      y: aTouch.offsetY - (videoDimensions.offsetHeight ?? 0),
+      // y: aTouch.pageY - (videoDimensions.offsetHeight ?? 0),
     };
 
     drawLocalAnnotation(anInstruction);
@@ -225,9 +227,12 @@ export const useMouseEventHandler = ({
     //   x: event.pageX,
     //   y: event.pageY,
     // };
+console.log('%c * onMouseDown - event ', 'color: gold; background-color: transparent; font-weight: 800; font-style: italic;', {event})
     const newPreviousPoint: any = {
-      x: event.pageX - (videoDimensions?.offsetWidth ?? 0),
-      y: event.pageY - (videoDimensions?.offsetHeight ?? 0),
+      x: event.offsetX - (videoDimensions?.offsetWidth ?? 0),
+      y: event.offsetY - (videoDimensions?.offsetHeight ?? 0),
+      // x: event.pageX - (videoDimensions?.offsetWidth ?? 0),
+      // y: event.pageY - (videoDimensions?.offsetHeight ?? 0),
     };
     console.log("mousedown", newPreviousPoint)
     setPreviousPoint(newPreviousPoint);

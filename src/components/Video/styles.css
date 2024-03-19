@@ -1,10 +1,18 @@
 div.root.video-container {
-  border: 1px solid teal; /* !! dev */
-  /* aspect-ratio: 16/9; */
+  /* !! dev */
+  /* border: 1px solid teal; */
+  aspect-ratio: 16/9;
+  /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+    /* padding-top: 56.25%; */
+
 
   video {
     /* aspect-ratio: 16/9; */
     height: 100%;
     width: 100%;
+    /* video flipped to mirror */
+    transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
   }
 }

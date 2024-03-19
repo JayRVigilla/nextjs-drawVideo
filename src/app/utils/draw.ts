@@ -70,6 +70,7 @@ export const denormalizeInstruction = (
     throw new Error("Could not denormalize coordinates for instruction");
   }
 
+  console.log('%c * denormalize -  ', 'color: yellow; background-color: transparent; font-weight: 800; font-style: italic;', {x:(videoDimensions.width ?? 1) * instruction.x , y:(videoDimensions.height ?? 1) * instruction.y , width: instruction.widthFromPoint || INITIAL_PEN_WIDTH })
   return new NAnnotationPoint(
     // instruction.x and instruction.y are fractions of the total width
     (videoDimensions.width ?? 1) * instruction.x,
@@ -152,11 +153,23 @@ export const getParentDimensions = (canvas: HTMLCanvasElement): VideoDimensions 
     offsetTop,
   } = canvas;
 
+
   const offsetRatio = offsetWidth / offsetHeight;
   // const videoRatio = videoWidth === videoHeight ? 1 : videoWidth / videoHeight; // ternary prevents 0/0 = NaN
 
   let width = offsetWidth;
   let height = offsetHeight;
+
+  const canvasDimensions = {
+    offsetWidth,
+    offsetHeight,
+    offsetLeft,
+    offsetTop,
+  }
+
+  const offsetDimensions = {
+    offsetWidth: (parentElement?.clientWidth - width) / 2 || 0,
+    offsetHeight: (parentElement?.clientHeight - height) / 2 || 0,}
 
   // If the video element is short and wide (landscape)
   // if (offsetRatio > videoRatio) {
