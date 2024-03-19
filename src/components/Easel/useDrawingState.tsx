@@ -17,52 +17,10 @@ export const useDrawingState = () => {
   const [isDrawModeOn, setIsDrawModeOn] = useState<boolean>(true); // Palette is open on Host
   const [penStyle, setPenStyle] = useState<PenStyle>({ width: INITIAL_PEN_WIDTH, color: INITIAL_PEN_COLOR });
   const [videoDimensions, setVideoDimensions] = useState<VideoDimensions>(INITIAL_DIMENSIONS); // dimensions of the video element
-  // const [videoDimensions, setVideoDimensions] = useState<VideoDimensions>(canvasRef?.current ? getParentDimensions(canvasRef.current) : INITIAL_DIMENSIONS); // dimensions of the video element
   const [telestrationHistory, setTelestrationHistory] = useState<InstructionMemory[]>([]);
-  const [backingInstructions, setBackingInstructions] = useState<NAnnotationPoint[]>();
-
-
-  // if (canvasRef?.current && !videoDimensions) {
-  //   const parentDimensions = getParentDimensions(canvasRef.current)
-  //   setVideoDimensions(parentDimensions)
-  // }
-
-  // !! may need these for receiving remote drawings
-  // presenceAnnotations: AVKAnnotationEvent[]; // Presence points - aka remoteHistory
-  // state used to draw and send points
-  // totalAnnotations: Map<Guid | null, number>;
-  // telestrationEventsMap: Map<string | null, AVKAnnotationEvent[]>;
-  // activeTelestrationId: Guid | null;
-  // activeSequence: number;
-  // previousPoint: TwoDimensionPosition;
-  // sendEvent: SendEvent;
-  // telestrationRetries: Map<string | null, number>; // used in receiveAVKTelestrationEndReportThunk
-
-
-  // converts Host mouse interactions to drawings
-//   useMouseEventHandler({
-//     penStyle,
-// setPenStyle,
-//   videoDimensions,
-//   setVideoDimensions,
-//   isDrawModeOn,
-//   setIsDrawModeOn,
-//   telestrationHistory,
-// // setTelestrationHistory,
-//   canvasRef
-  //   });
-
-  // useEffect(() => {
-  //   if (canvasRef?.current) {
-  //     const parentDimensions = getParentDimensions(canvasRef.current)
-  //     setVideoDimensions(parentDimensions)
-  //   }
-  // },[canvasRef])
+  // const [backingInstructions, setBackingInstructions] = useState<NAnnotationPoint[]>();
       useEffect(() => {
-    /**
-     * Listening to the parent element resize in order to redraw Telestration.
-     */
-    console.log('%c * new useEffect', 'color: orange; background-color: transparent; font-weight: 800; font-style: italic;')
+    // Listening to the parent element resize in order to redraw Telestration.
     if (canvasRef?.current?.parentElement) {
 
         const resizeObserver = new ResizeObserver((entries) => {
@@ -71,7 +29,8 @@ export const useDrawingState = () => {
             setVideoDimensions({ ...videoDimensions, width, height })
           }
         })
-        resizeObserver.observe(canvasRef.current.parentElement)
+      resizeObserver.observe(canvasRef.current.parentElement)
+      // TODO: redraw from telestrationHistory
       }
     }, [canvasRef, videoDimensions, setVideoDimensions]);
 

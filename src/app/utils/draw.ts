@@ -1,21 +1,14 @@
 import { MutableRefObject } from "react";
 import { PenStyle, PenWidth, TwoDimensionPosition } from "../types/drawing";
 import { NAnnotationInstruction, VideoDimensions, NAnnotationPoint } from "../types/drawing";
-import { INITIAL_PEN_WIDTH, INITIAL_DIMENSIONS, INITIAL_PEN_COLOR } from "@/components/Easel/constants";
+import { INITIAL_PEN_WIDTH } from "@/components/Easel/constants";
 
 export const draw = (
   pointFrom: TwoDimensionPosition,
   pointTo: TwoDimensionPosition,
   style: PenStyle,
-  // canvasRef: MutableRefObject<HTMLCanvasElement>
   canvas: HTMLCanvasElement
 ) => {
-  // if (!canvasRef?.current) return
-
-  // const canvas = canvasRef?.current
-  // const canvas = document.getElementById(
-    //   TELESTRATION_EASEL_ID
-    // ) as HTMLCanvasElement;
     const context = canvas.getContext("2d");
     console.log('%c * draw - pointFrom, pointTo, style, canvas ', 'color: #3366CC; background-color: transparent; font-weight: 800; font-style: italic;', {pointFrom, pointTo, style, canvas, context})
 
@@ -70,7 +63,6 @@ export const denormalizeInstruction = (
     throw new Error("Could not denormalize coordinates for instruction");
   }
 
-  console.log('%c * denormalize -  ', 'color: yellow; background-color: transparent; font-weight: 800; font-style: italic;', {x:(videoDimensions.width ?? 1) * instruction.x , y:(videoDimensions.height ?? 1) * instruction.y , width: instruction.widthFromPoint || INITIAL_PEN_WIDTH })
   return new NAnnotationPoint(
     // instruction.x and instruction.y are fractions of the total width
     (videoDimensions.width ?? 1) * instruction.x,
@@ -105,9 +97,6 @@ export const drawAnnotation = (
   canvasRef: MutableRefObject<HTMLCanvasElement>
 ) => {
   const canvas = canvasRef.current;
-  // const canvas = document.getElementById(
-  //   TELESTRATION_EASEL_ID
-  // ) as HTMLCanvasElement;
   const context = canvas.getContext("2d");
   [...instructions].forEach((instruction, i) => {
     const nextPoint = [...instructions][i + 1];
@@ -133,7 +122,6 @@ export const drawAnnotation = (
         );
       } catch (error: any) {
         console.warn("Skipping annotation instructions.", error?.message);
-        // logger().warn("Skipping annotation instructions.", error?.message);
       }
     }
   });
@@ -180,7 +168,7 @@ export const getParentDimensions = (canvas: HTMLCanvasElement): VideoDimensions 
   //   height = width / videoRatio;
   // }
 
-  console.log(
+  console.info(
     `Getting new video dimensions ${JSON.stringify({ width, height })}`
   );
 

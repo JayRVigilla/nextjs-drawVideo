@@ -56,10 +56,9 @@ export const useMouseEventHandler = ({
     };
     if (!canvas) return
     draw(previousPoint.current, point, styles, canvas);
-console.log('%c * drawLocalAnnotation - videoDimensions ', 'color: pink; background-color: transparent; font-weight: 800; font-style: italic;', {videoDimensions, point, styles})
     const newPreviousPoint = { x: point.x, y: point.y };
     setPreviousPoint(newPreviousPoint);
-  },[canvas, penColor, penWidth, videoDimensions]);
+  },[canvas, penColor, penWidth]);
 
   const buildAnnotationPointHelper = useCallback((anInstruction: any): void => {
     const aPoint: NAnnotationPoint = normalizeInstruction(
@@ -73,12 +72,9 @@ console.log('%c * drawLocalAnnotation - videoDimensions ', 'color: pink; backgro
   },[penWidth, videoDimensions]);
 
   const helperForTouchOrMouseEvent = useCallback((aTouch: any) => {
-    console.log("helperForTouchOrMouseEvent", aTouch)
     const anInstruction = {
       x: aTouch.offsetX - (videoDimensions.offsetWidth ?? 0),
-      // x: aTouch.pageX - (videoDimensions.offsetWidth ?? 0),
       y: aTouch.offsetY - (videoDimensions.offsetHeight ?? 0),
-      // y: aTouch.pageY - (videoDimensions.offsetHeight ?? 0),
     };
 
     drawLocalAnnotation(anInstruction);
