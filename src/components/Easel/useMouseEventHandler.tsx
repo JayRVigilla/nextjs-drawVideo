@@ -10,22 +10,21 @@ type tProps = {
   videoDimensions: VideoDimensions;
   isDrawModeOn: boolean;
   telestrationHistory: InstructionMemory[];
-  // telestrationHistory: InstructionMemory;
-  setPenStyle: Dispatch<SetStateAction<PenStyle>>;
+  // setPenStyle: Dispatch<SetStateAction<PenStyle>>;
   setVideoDimensions: Dispatch<SetStateAction<VideoDimensions>>;
-  setIsDrawModeOn: Dispatch<SetStateAction<boolean>>;
-  // setTelestrationHistory: Dispatch<SetStateAction<InstructionMemory>>;
+  // setIsDrawModeOn: Dispatch<SetStateAction<boolean>>;
+  setTelestrationHistory: Dispatch<SetStateAction<InstructionMemory[]>>;
 }
 
 export const useMouseEventHandler = ({
   penStyle,
-  setPenStyle,
+  // setPenStyle,
     videoDimensions,
-    setVideoDimensions,
+    // setVideoDimensions,
     isDrawModeOn = true,
-    setIsDrawModeOn,
+    // setIsDrawModeOn,
     telestrationHistory,
-  // setTelestrationHistory,
+    setTelestrationHistory,
     canvasRef
 }: tProps) => {
   const { color: penColor, width: penWidth } = penStyle
@@ -118,7 +117,6 @@ export const useMouseEventHandler = ({
       x: event.offsetX - (videoDimensions?.offsetWidth ?? 0),
       y: event.offsetY - (videoDimensions?.offsetHeight ?? 0),
     };
-    console.log("mousedown", newPreviousPoint)
     setPreviousPoint(newPreviousPoint);
     buildAnnotationPointHelper(newPreviousPoint);
   };
@@ -152,11 +150,21 @@ export const useMouseEventHandler = ({
     }
   };
 
-      function endLine(){
+  function endLine(){
     canvas?.removeEventListener("mousemove", onMouseMove);
-
     setPreviousPoint(INITIAL_PREVIOUS_POINT);
+
+
+
     if (backingInstructions.current.length > 0) {
+      /* Save the history */
+      const newSet: InstructionMemory = {
+        instructions: [...backingInstructions.current],
+        style: penColor,
+      };
+
+      const newHistory = [...telestrationHistory, newSet];
+      setTelestrationHistory(newHistory);
       setBackingInstructions([]);
     }
   };
@@ -177,7 +185,8 @@ export const useMouseEventHandler = ({
     penWidth,
     telestrationHistory,
     buildAnnotationPointHelper,
-    helperForTouchOrMouseEvent
+    helperForTouchOrMouseEvent,
+    setTelestrationHistory
   ]);
 
 };

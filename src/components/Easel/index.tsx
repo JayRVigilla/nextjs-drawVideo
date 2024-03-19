@@ -26,14 +26,14 @@ const {isDrawModeOn,
   // converts Host mouse interactions to drawings
   useMouseEventHandler({
     penStyle,
-setPenStyle,
-  videoDimensions,
-  setVideoDimensions,
-  isDrawModeOn,
-  setIsDrawModeOn,
-  telestrationHistory,
-// setTelestrationHistory,
-  canvasRef
+    // setPenStyle,
+    videoDimensions,
+    setVideoDimensions,
+    isDrawModeOn,
+    // setIsDrawModeOn,
+    telestrationHistory,
+    setTelestrationHistory,
+    canvasRef
   });
 
 

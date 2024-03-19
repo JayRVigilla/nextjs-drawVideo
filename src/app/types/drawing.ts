@@ -77,3 +77,8 @@ export interface IPosition {
   y: number;
   browserY?: number;
 }
+
+export interface InstructionMemory {
+  instructions: NAnnotationPoint[];
+  style: string; // hex color
+}

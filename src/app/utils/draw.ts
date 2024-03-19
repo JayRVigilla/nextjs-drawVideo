@@ -93,9 +93,10 @@ export const drawAnnotation = (
   style: string, // expecting HEX color
   instructions: NAnnotationInstruction[],
   videoDimensionsObject: VideoDimensions,
-  canvasRef: MutableRefObject<HTMLCanvasElement>
+  canvasRef: MutableRefObject<HTMLCanvasElement | undefined>
 ) => {
   const canvas = canvasRef.current;
+  if(canvas === undefined) return
   const context = canvas.getContext("2d");
   [...instructions].forEach((instruction, i) => {
     const nextPoint = [...instructions][i + 1];
