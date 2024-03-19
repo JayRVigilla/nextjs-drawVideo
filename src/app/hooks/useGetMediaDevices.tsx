@@ -52,8 +52,6 @@ export const useAVMediaDevices = () => {
   useEffect(() => {
     const initStreams = async () => {
       const localStreams = await getLocalStreams()
-      // console.log("streams useEffect - localStreams", localStreams)
-      // console.log("streams useEffect - getTracks", localStreams?.getTracks())
       if (localStreams) {
         setStreams(localStreams)
         const tracks = localStreams?.getTracks()

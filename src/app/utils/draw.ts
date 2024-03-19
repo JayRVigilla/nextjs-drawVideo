@@ -9,8 +9,7 @@ export const draw = (
   style: PenStyle,
   canvas: HTMLCanvasElement
 ) => {
-    const context = canvas.getContext("2d");
-    console.log('%c * draw - pointFrom, pointTo, style, canvas ', 'color: #3366CC; background-color: transparent; font-weight: 800; font-style: italic;', {pointFrom, pointTo, style, canvas, context})
+  const context = canvas.getContext("2d");
 
   if(!context) return
   context.beginPath();
