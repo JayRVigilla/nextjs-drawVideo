@@ -323,14 +323,15 @@ console.log('%c * onMouseDown - event ', 'color: gold; background-color: transpa
      */
     console.log('%c * new useEffect', 'color: orange; background-color: transparent; font-weight: 800; font-style: italic;')
     if (canvasRef?.current?.parentElement) {
-        console.log('%c * IF new useEffect', 'color: orange; background-color: transparent; font-weight: 800; font-style: italic;')
+
         const resizeObserver = new ResizeObserver((entries) => {
-          console.log('%c * resize - entries ', 'color: #3366CC; background-color: transparent; font-weight: 800; font-style: italic;', { entries })
-          const {width, height} = entries[0].contentRect
-          setVideoDimensions({...videoDimensions, width, height})
+          const { width, height } = entries[0].contentRect
+          if(width !== videoDimensions.width || height !== videoDimensions.height){
+            setVideoDimensions({ ...videoDimensions, width, height })
+          }
         })
         resizeObserver.observe(canvasRef.current.parentElement)
       }
-    }, [canvasRef]);
+    }, [canvasRef, videoDimensions, setVideoDimensions]);
 
 };
