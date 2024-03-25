@@ -2,4 +2,5 @@ canvas.root{
   /* width & height are defined by props */
   position: absolute;
   z-index: 10;
+  border: 2px solid red;
 }

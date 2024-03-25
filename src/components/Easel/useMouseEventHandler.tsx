@@ -18,8 +18,8 @@ export const useMouseEventHandler = ({
   penStyle,
   videoDimensions,
   isDrawModeOn = true,
-  telestrationHistory,
-  setTelestrationHistory,
+  telestrationHistory: _telestrationHistory,
+  setTelestrationHistory: _setTelestrationHistory,
   canvasRef
 }: tProps) => {
   const { color: penColor, width: penWidth } = penStyle
@@ -39,6 +39,12 @@ export const useMouseEventHandler = ({
     backingInstructions.current = data;
     _setBackingInstructions(data);
   };
+
+  const telestrationHistory = useRef(_telestrationHistory);
+  const setTelestrationHistory = useCallback((data: InstructionMemory[]) => {
+    telestrationHistory.current = data;
+    _setTelestrationHistory(data);
+  },[_setTelestrationHistory])
 
   const canvas = canvasRef?.current
 
@@ -65,7 +71,6 @@ export const useMouseEventHandler = ({
   },[penWidth, videoDimensions]);
 
   const helperForTouchOrMouseEvent = useCallback((aTouch: any) => {
-    // console.log("helper", videoDimensions)
     const anInstruction = {
       x: aTouch.offsetX,
       y: aTouch.offsetY,
@@ -81,16 +86,45 @@ export const useMouseEventHandler = ({
       ...backingInstructions.current,
     ] as NAnnotationPoint[];
     if (backingInstructionsCopy.length === MAX_ANNOTATION_POINTS) {
+      console.log("helperForTouchOrMouseEvent, backingInstructionsCopy.length === MAX_ANNOTATION_POINTS")
+
       const points: NAnnotationPoint[] = backingInstructionsCopy.splice(
         0,
         MAX_ANNOTATION_POINTS
       );
       // TODO: setTelestrationHistory as done in endline()
       // TODO: ^ turn that into its own function
+      const newSet: InstructionMemory = {
+        instructions: [...backingInstructionsCopy],
+        style: penColor,
+      };
+      // if(backingInstructionsCopy.length){
+        const newHistory = [...telestrationHistory.current, newSet];
+        setTelestrationHistory(newHistory);
+        console.log("helperForTouchOrMouseEvent, setTelestrationHistory", newHistory)
+      // }
       /* Retain the last point */
       setBackingInstructions([points[MAX_ANNOTATION_POINTS - 1]]);
     }
-  },[buildAnnotationPointHelper, drawLocalAnnotation]);
+  },[buildAnnotationPointHelper, drawLocalAnnotation, penColor, telestrationHistory, setTelestrationHistory]);
+
+  const endLine = useCallback((onMouseEvent: (event: Event)=> void)=>{
+    canvas?.removeEventListener("mousemove", onMouseEvent);
+    setPreviousPoint(INITIAL_PREVIOUS_POINT);
+
+    if (backingInstructions.current.length > 0) {
+      /* Save the history */
+      const newSet: InstructionMemory = {
+        instructions: [...backingInstructions.current],
+        style: penColor,
+      };
+
+      const newHistory = [...telestrationHistory.current, newSet];
+      setTelestrationHistory(newHistory);
+      console.log("endLINe",newHistory)
+      setBackingInstructions([]);
+    }
+  },[canvas, penColor, setTelestrationHistory]);
 
   useEffect(() => {
   // add onMouseEvent listeners
@@ -111,26 +145,14 @@ export const useMouseEventHandler = ({
     canvas.addEventListener("mousemove", onMouseMove);
 
     const newPreviousPoint: any = {
-      x: event.offsetX - (videoDimensions?.offsetWidth ?? 0),
-      y: event.offsetY - (videoDimensions?.offsetHeight ?? 0),
+      x: event.offsetX,
+      y: event.offsetY,
     };
     setPreviousPoint(newPreviousPoint);
     buildAnnotationPointHelper(newPreviousPoint);
   };
 
-  // onMouseUp event
-  const onMouseUp = (): void => {
-    endLine();
-  };
-
-    const onMouseLeave = (event: MouseEvent) => {
-    // only end line and send endEvent if drawing
-    if (event.buttons === 1) {
-      endLine();
-    }
-  };
-
-      // onMouseMove event
+  // onMouseMove event
   const onMouseMove = (moveEvent: Event): void => {
     const anEvent: React.MouseEvent<
       HTMLCanvasElement,
@@ -138,33 +160,42 @@ export const useMouseEventHandler = ({
     > = (moveEvent as unknown) as React.MouseEvent<
       HTMLCanvasElement,
       MouseEvent
-    >;
+      >;
+    
     /* Always make sure left button is down while moving */
-    if (anEvent.buttons === 1) {
-      helperForTouchOrMouseEvent(anEvent);
-    } else {
-      onMouseUp();
+    anEvent.buttons === 1 ? helperForTouchOrMouseEvent(anEvent) : onMouseUp();
+  };
+
+  // onMouseUp event
+  const onMouseUp = (): void => {
+    endLine(onMouseMove);
+  };
+
+    const onMouseLeave = (event: MouseEvent) => {
+    // only end line and send endEvent if drawing
+    if (event.buttons === 1) {
+      endLine(onMouseMove);
     }
   };
 
-  function endLine(){
-    canvas?.removeEventListener("mousemove", onMouseMove);
-    setPreviousPoint(INITIAL_PREVIOUS_POINT);
 
+  // function endLine(){
+  //   canvas?.removeEventListener("mousemove", onMouseMove);
+  //   setPreviousPoint(INITIAL_PREVIOUS_POINT);
 
+  //   if (backingInstructions.current.length > 0) {
+  //     /* Save the history */
+  //     const newSet: InstructionMemory = {
+  //       instructions: [...backingInstructions.current],
+  //       style: penColor,
+  //     };
 
-    if (backingInstructions.current.length > 0) {
-      /* Save the history */
-      const newSet: InstructionMemory = {
-        instructions: [...backingInstructions.current],
-        style: penColor,
-      };
-
-      const newHistory = [...telestrationHistory, newSet];
-      setTelestrationHistory(newHistory);
-      setBackingInstructions([]);
-    }
-  };
+  //     const newHistory = [...telestrationHistory.current, newSet];
+  //     setTelestrationHistory(newHistory);
+  //     console.log("endLINe",newHistory)
+  //     setBackingInstructions([]);
+  //   }
+  // };
 
     canvas.addEventListener("mousedown", onMouseDown);
     canvas.addEventListener("mouseup", onMouseUp);
@@ -178,12 +209,12 @@ export const useMouseEventHandler = ({
     canvas,
     isDrawModeOn,
     penColor,
-    videoDimensions,
     penWidth,
     telestrationHistory,
     buildAnnotationPointHelper,
     helperForTouchOrMouseEvent,
-    setTelestrationHistory
+    setTelestrationHistory,
+    endLine
   ]);
 
 };

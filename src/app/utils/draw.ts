@@ -181,3 +181,11 @@ export const getParentDimensions = (canvas: HTMLCanvasElement): VideoDimensions 
     // offsetHeight: (parentElement?.clientHeight - height) / 2 || 0,
   };
 };
+
+export const clearCanvas = (canvas: HTMLCanvasElement, canvasDimensions: VideoDimensions) => {
+  const { width, height } = canvasDimensions
+  if(width && height){
+    const context = canvas.getContext("2d");
+    context!.clearRect(0, 0, canvas.width, canvas.height);
+  }
+}
